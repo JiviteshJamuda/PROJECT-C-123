@@ -11,23 +11,22 @@ from PIL import Image
 import PIL.ImageOps
 import os, ssl, time
 
-if (not os.environ.get('PYTHONHTTPSVERIFY', ' ') and
-        getattr(ssl, '_create_unverified_context', None)):
-        ssl._create_default_https_context = ssl._create_unverified_context
-
 # fetching data
 X = np.load('image.npz')['arr_0']
 y = pd.read_csv('data.csv')['labels']
 classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 n_classes = len(classes)
 
+# Training the data
 x_train, x_test, y_train, y_test = train_test_split(X, y, train_size = 7500, test_size = 2500, random_state = 9)
 x_train_scaled = x_train/255.0
 x_test_scaled = x_test/255.0
 
 clf = LogisticRegression(solver='saga', multi_class='multinomial').fit(x_train_scaled, y_train)
 
+# Prediction
 y_pred = clf.predict(x_test_scaled)
+# Accuracy of prediction
 accuracy = accuracy_score(y_test, y_pred)
 print('accuracy : ', accuracy)
 
